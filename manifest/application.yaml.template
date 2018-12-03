@@ -39,6 +39,17 @@ spec:
       Once the cluster has been deployed you will be prompted to create an account with Peernova,inc. To request access to create an account you will need to contact Peernova, Inc. The license will provide you with registration access to enable access to GCP on Cuneiform. You will be prompted to create a username and password. Once registration is complete you will be able to use Cuneiform on GCP. 
 
 
+      # Access Cuneiform Gateway Swagger
+
+      The access to the Gateway Swagger is restricted by default. In order to authorize access to the 35.1.1.1/32 and 35.1.2.0/24 CIDR blocks, for example, you need to issue a command like
+
+      ```
+      kubectl patch service/"$APP_INSTANCE_NAME-gateway-ext" \
+        --namespace "$NAMESPACE" \
+        --patch '{"spec": {"loadBalancerSourceRanges": ["35.1.1.1/32", "35.1.2.0/24"] }}'
+      ```
+
+
   info:
   - name: Cuneiform Frontend IP
     type: Reference
