@@ -1,0 +1,15 @@
+//  end point ---> http://0.0.0.0:4599/api/v1/batch
+
+{
+  "query":"select validate_canary_message(data) as valid from casscanner ",
+  "source":{
+    "viewName": "casscanner",
+    "name":"cassandra",
+    "keyspace":"cuneiform_events",
+    "tableName":"events"
+  },
+  "sink":{
+    "name":"kafka",
+    "topic":"scanner_validate_topic"
+  }
+}

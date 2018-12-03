@@ -1,0 +1,339 @@
+{
+	"fields": [{
+			"name": "ACCOUNT_NUMBER",
+			"type": "string",
+			"search": "exact",
+			"nullable": true,
+			"options": {
+				"format": "alphanum",
+				"length": 32
+			}
+		},
+		{
+			"name": "TRADE_ID",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"format": "alphanum",
+				"length": 32
+			}
+		},
+		{
+			"name": "CUST_ID",
+			"type": "string",
+			"search": "exact",
+			"nullable": true,
+			"options": {
+				"format": "alphanum",
+				"length": 16
+			}
+		},
+		{
+			"name": "LOAN_TYPE",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["GOVT", "STATE", "CORP", "CD", "TIPS", "LOAN_DAILY_BAL"]
+			}
+		},
+		{
+			"name": "TRANS_ID",
+			"type": "long",
+			"nullable": true,
+			"options": {
+				"range": [1, 10000000]
+			}
+		},
+		{
+			"name": "TRANS_DATE",
+			"type": "date",
+			"nullable": true,
+			"options": {
+                "format": "yyyy-MM-dd"
+            }
+		},
+		{
+			"name": "PRICE",
+			"type": "float",
+			"nullable": true,
+			"scale": 4,
+			"options": {
+				"range": [1, 1000000]
+			}
+		},
+		{
+			"name": "QUANTITY",
+			"type": "int",
+			"nullable": true,
+			"options": {
+				"range": [1, 100000]
+			}
+		},
+		{
+			"name": "AMOUNT",
+			"type": "double",
+			"nullable": true,
+			"scale": 2
+		},
+		{
+			"name": "TRADE_EXECUTION_STATUS",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["BOOKED", "IN PROCESS", "EXECUTED", "REJECTED", "CANCELED", "DEFERRED"]
+			}
+		},
+		{
+			"name": "INST_TYPE",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["FEDERAL", "LOCAL", "BANK", "CLEARING HOUSE", "BROKER", "CUSTODIAN"]
+			}
+		},
+		{
+			"name": "EXCHANGE",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"datatypes": "exchanges"
+			}
+		},
+		{
+			"name": "INDEX_NAME",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"datatypes": "indices"
+			}
+		},
+		{
+			"name": "TRADE_TS",
+			"type": "timestamp",
+			"nullable": true,
+			"options": {
+                "format": "yyyy-MM-dd hh:mm:ss.SSS"
+             }
+		},
+		{
+			"name": "TRADE_TYPE",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["STOP", "BUY LIMIT", "MARKET", "SELL LIMIT"]
+			}
+		},
+		{
+			"name": "BUY_SELL_SIDE",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["BUY SIDE", "SELL SIDE", "INST", "GOVT", "THIRD PARTY"]
+			}
+		},
+		{
+			"name": "TRADER_CODE",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"format": "alpha",
+				"range": [5, 20]
+			}
+		},
+		{
+			"name": "BROKER_CODE",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"format": "alpha",
+				"range": [5, 20]
+			}
+		},
+		{
+			"name": "COMMENTS",
+			"type": "string",
+			"nullable": true
+		},
+		{
+			"name": "TRADE_BOOKING_STATE",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["INITIATED", "REVIEW", "SUBMITTED", "CLEARED"]
+			}
+		},
+		{
+			"name": "INTERNAL_TRADE_ID",
+			"type": "long",
+			"nullable": true,
+			"options": {
+				"range": [1, 10000000]
+			}
+		},
+		{
+			"name": "BOOK_ID",
+			"type": "long",
+			"nullable": true,
+			"options": {
+				"range": [1, 10000000]
+			}
+		},
+		{
+			"name": "COUNTERPARTY_LE",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"datatypes": "insts"
+			}
+		},
+		{
+			"name": "NOTIONAL_VALUE",
+			"type": "double",
+			"nullable": true,
+			"scale": 2,
+			"options": {
+				"range": [1000, 10000000]
+			}
+		},
+		{
+			"name": "INTEREST_RATE",
+			"type": "float",
+			"nullable": true,
+			"scale": 2,
+			"options": {
+				"range": [0, 100]
+			}
+		},
+		{
+			"name": "FIXED_RATE",
+			"type": "float",
+			"nullable": true,
+			"scale": 2,
+			"options": {
+				"range": [0, 100]
+			}
+		},
+		{
+			"name": "FLOAT_RATE",
+			"type": "float",
+			"nullable": true,
+			"scale": 2,
+			"options": {
+				"range": [0.01, 100]
+			}
+		},
+		{
+			"name": "OPTION_EXPIRY_DATE",
+			"type": "date",
+			"nullable": true,
+			"options": {
+                "format": "yyyy-MM-dd"
+            }
+		},
+		{
+			"name": "OPTION_TYPE",
+			"type": "string",
+			"nullable": true,
+			"options": {
+				"enum": ["PUT", "CALL", "ETC", "OTC"]
+			}
+		},
+		{
+			"name": "STRIKE_PRICE",
+			"type": "float",
+			"nullable": true,
+			"scale": 4,
+			"options": {
+				"range": [1, 1000000]
+			}
+		},
+		{
+			"name": "BUY_SELL",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["BUY", "SELL", "HOLD", "SUSPEND"]
+			}
+		},
+		{
+			"name": "SETTLEMENT_FREQUENCY",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["MONTHLY", "QUARTERLY", "WEEKLY", "DAILY", "ANNUAL", "SEMI ANNUAL"]
+			}
+		},
+		{
+			"name": "SETTLEMENT_STATUS",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["DONE", "REJECTED", "CANCELED", "HOLD"]
+			}
+		},
+		{
+			"name": "SETTLEMENT_CURRENCY",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"datatypes": "currency-short"
+			}
+		},
+		{
+			"name": "SETTLEMENT_METHOD",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["PHYSICAL", "ELECTRONIC", "THIRD PARTY", "DIRECT"]
+			}
+		},
+		{
+			"name": "MISC_BLOB_1",
+			"nullable": true,
+			"type": "string",
+			"default": "",
+			"search": "standard",
+			"options": {
+				"mask": true,
+				"range": [10, 200]
+			}
+		},
+		{
+			"name": "MISC_BLOB_2",
+			"nullable": true,
+			"type": "string",
+			"default": "",
+			"search": "ignored",
+			"options": {
+				"mask": true,
+				"range": [100, 600]
+			}
+		},
+		{
+			"name": "VERSION",
+			"type": "int",
+			"nullable": true,
+			"options": {
+				"range": [1, 100]
+			}
+		}
+	],
+	"name": "%s"
+}

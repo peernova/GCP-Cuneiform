@@ -1,0 +1,18 @@
+{
+  "query":"select uuid_to_timestamp(uid,5) tsp, uid, merkle as did, value as data from data_table eventwriter ",
+  "source":{
+    "viewName": "view_2",
+    "name":"kafka",
+    "schemaName":"legacy_cash360_ingest_schema",
+    "topic":"in_writer",
+    "encoding":"canonical"
+  },
+  "sink":{
+    "name":"cassandra",
+    "keyspace": "cuneiform_events",
+    "partitionKey": ["tsp"],
+    "clusteringKey": ["uid"],
+    "tableName": "events",
+    "createTableStatement":"CREATE TABLE IF NOT EXISTS cuneiform_events.events (tsp   timestamp, uid   timeuuid, did   ascii, data  blob, PRIMARY KEY (tsp, uid)) WITH CLUSTERING ORDER BY (uid DESC)"
+  }
+}

@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels: &ServiceLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-dashboard
+  name: $APP_INSTANCE_NAME-dashboard-ext
+spec:
+  ports:
+  - name: dashboard
+    port: 4080
+    protocol: TCP
+  selector: *ServiceLabels
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels: &ServiceLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-dashboard
+  name: $APP_INSTANCE_NAME-dashboard
+spec:
+  ports:
+  - name: server
+    port: 4080
+    protocol: TCP
+  selector: *ServiceLabels
+  clusterIP: None
+
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: $APP_INSTANCE_NAME-dashboard
+  labels: &DeploymentLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-dashboard
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  progressDeadlineSeconds: 180
+  selector:
+    matchLabels: *DeploymentLabels
+  template:
+    metadata:
+      labels: *DeploymentLabels
+    spec:
+      hostname: $APP_INSTANCE_NAME-dashboard
+      containers:
+        - name: dashboard
+          image: $IMAGE_SPARK_DASHBOARD
+          imagePullPolicy: Always
+          env:
+          - name: NAME_PREFIX
+            value: "$APP_INSTANCE_NAME"
+          - name: NAME_SUFFIX
+            value: ""
+          - name: JAVA_OPTS
+            value: "-Xmx4G -Xmx4G"
+          resources:
+            limits:
+              cpu: "1.3"
+              memory: 4Gi
+            requests:
+              cpu: "0.4"
+              memory: 1600Mi
+          livenessProbe:
+            initialDelaySeconds: 45
+            periodSeconds: 120
+            timeoutSeconds: 5
+            tcpSocket:
+              port: 4080
+

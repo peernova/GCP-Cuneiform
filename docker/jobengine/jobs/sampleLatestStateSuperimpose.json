@@ -1,0 +1,42 @@
+{"latestStateStreams":
+[{
+  "query":"select * from view1 where SOURCE_REQUEST_ID IS NOT NULL AND length(SOURCE_REQUEST_ID) > 0",
+  "source":{
+    "viewName": "view1",
+    "name":"kafka",
+    "schemaName":"legacy_cash360_ingest_schema",
+    "encoding":"canonical",
+    "topic":"in_writer"
+  },
+  "sink":{
+    "name": "elasticsearch",
+    "index": "latest_state_events",
+    "type": "latest_state_events",
+    "port":9200,
+    "stateRules":"scriptName",
+    "_id":"SOURCE_REQUEST_ID"
+  }
+}
+,
+  {
+    "query":"select G.*, F.SOURCE_REQUEST_ID as contx_forward_fields from (select * from view2  where APPLICATION_MNEMONIC = 'FFC' AND (SOURCE_REQUEST_ID IS  NULL OR length(SOURCE_REQUEST_ID) = 0) AND ENTERPRISE_CONTEXTIDGUID IS NOT NULL AND length(ENTERPRISE_CONTEXTIDGUID) > 0 ) G JOIN (select * from view2  where APPLICATION_MNEMONIC = 'FFC' AND (SOURCE_REQUEST_ID IS NOT NULL AND length(SOURCE_REQUEST_ID) > 0) AND (ENTERPRISE_CONTEXTIDGUID IS NOT NULL AND length(ENTERPRISE_CONTEXTIDGUID) > 0)) F ON ((F.ENTERPRISE_CONTEXTIDGUID = G.ENTERPRISE_CONTEXTIDGUID) AND ((F.watermarkfield >= G.watermarkfield AND F.watermarkfield <= G.watermarkfield + interval 3 days) OR (G.watermarkfield >= F.watermarkfield AND G.watermarkfield <= F.watermarkfield + interval 3 days)) )",
+    "source":{
+      "viewName": "view2",
+      "name":"kafka",
+      "schemaName":"legacy_cash360_ingest_schema",
+      "encoding":"canonical",
+      "topic":"in_writer"
+    },
+    "sink":{
+      "name": "elasticsearch",
+      "index": "latest_state_events",
+      "type": "latest_state_events",
+      "port":9200,
+      "stateRules":"scriptName",
+      "_id":"contx_forward_fields",
+      "outputMode":"append",
+      "watermarkField":"LAST_ACTIVITY_TIME_STAMP",
+      "duration":"3 days"
+    }
+  }]
+}

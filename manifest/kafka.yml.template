@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels: &ServiceLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-kafka
+  name: $APP_INSTANCE_NAME-kafka
+spec:
+  ports:
+  - name: server
+    port: 9092
+    protocol: TCP
+  selector: *ServiceLabels
+  clusterIP: None
+
+---
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: $APP_INSTANCE_NAME-kafka
+  labels: &DeploymentLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-kafka
+
+spec:
+  serviceName: kafka
+  replicas: 1
+  selector:
+    matchLabels: *DeploymentLabels
+  template:
+    metadata:
+      labels: *DeploymentLabels
+    spec:
+      hostname: $APP_INSTANCE_NAME-kafka
+      containers:
+        - name: kafka
+          image: $IMAGE_KAFKA
+          imagePullPolicy: Always
+          env:
+          - name: ZK_SERVERS
+            value:  "$APP_INSTANCE_NAME-zookeeper:2181"
+          - name: LOG_RETENTION_HOURS
+            value: "168"
+          - name: BROKER_ID
+            value:   "1"
+          - name: ADVERTISED_HOST
+            value:  "$APP_INSTANCE_NAME-kafka"
+          - name: KAFKA_HEAP_OPTS
+            value: "-Xmx4G -Xms4G"
+          - name: NUM_PARTITIONS
+            value: "1"
+          volumeMounts:
+          - name: $APP_INSTANCE_NAME-kafka-logs
+            mountPath: /var/log
+          resources:
+            limits:
+              cpu: "3.1"
+              memory: 8Gi
+            requests:
+              cpu: "0.9"
+              memory: 3200Mi
+          livenessProbe:
+            initialDelaySeconds: 45
+            periodSeconds: 120
+            timeoutSeconds: 5
+            tcpSocket:
+              port: 9092
+
+  volumeClaimTemplates:
+  - metadata:
+      name: $APP_INSTANCE_NAME-kafka-logs
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 20Gi

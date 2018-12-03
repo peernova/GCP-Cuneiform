@@ -1,0 +1,45 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: $APP_INSTANCE_NAME-dispatcher
+  labels: &DeploymentLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-dispatcher
+
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  progressDeadlineSeconds: 180
+  selector:
+    matchLabels: *DeploymentLabels
+  template:
+    metadata:
+      labels: *DeploymentLabels
+    spec:
+      hostname: $APP_INSTANCE_NAME-dispatcher
+      containers:
+        - name: dispatcher
+          image: $IMAGE_CUNEIFORM
+          imagePullPolicy: Always
+          env:
+          - name: KV_CONNECTION
+            value: "consul://$APP_INSTANCE_NAME-consul"
+          - name: SERVICE_NAME
+            value: "dispatcher --dispatchercp.provider $APP_INSTANCE_NAME-counterparty:9714"
+          - name: DISPATCHERSTORAGE_CONNECTION
+            value: "cassandra://$APP_INSTANCE_NAME-cassandra?keyspace=cuneiform_events"
+          - name: DISPATCHER_SINKKAFKACONNECTION
+            value: "kafka://$APP_INSTANCE_NAME-kafka?topic=in_merker"
+          - name: DISPATCHER_EVENTKAFKACONNECTION
+            value:  "kafka://$APP_INSTANCE_NAME-kafka?topic=pn_writer"
+          - name: DISPATCHERCP_SRCKAFKACONNECTION
+            value: "kafka://$APP_INSTANCE_NAME-kafka?topic=pn_dispatcher_cp&group=counterparty"
+          - name: SECURITY_SERVERKEYSTORE
+            value: "/opt/keystore_bundle.jks"
+          resources:
+            limits:
+              cpu: "0.7"
+              memory: 1500Mi
+            requests:
+              cpu: "0.2"
+              memory: 600Mi

@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels: &ServiceLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-gateway
+  name: $APP_INSTANCE_NAME-gateway-ext
+spec:
+  ports:
+  - name: gateway
+    port: 9710
+    protocol: TCP
+  selector: *ServiceLabels
+  type: LoadBalancer
+  loadBalancerSourceRanges:
+  - 10.1.1.1/32
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels: &ServiceLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-gateway
+  name: $APP_INSTANCE_NAME-gateway
+spec:
+  ports:
+  - name: gateway
+    port: 9710
+    protocol: TCP
+  selector: *ServiceLabels
+  clusterIP: None
+---
+
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: $APP_INSTANCE_NAME-gateway
+  labels: &DeploymentLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-gateway
+
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  progressDeadlineSeconds: 180
+  selector:
+    matchLabels: *DeploymentLabels
+  template:
+    metadata:
+      labels: *DeploymentLabels
+    spec:
+      hostname: $APP_INSTANCE_NAME-gateway
+      containers:
+        - name: gateway
+          image: $IMAGE_CUNEIFORM
+          imagePullPolicy: Always
+          env:
+          - name: CONSUL_SERVER
+            value: "consul://$APP_INSTANCE_NAME-consul"
+          - name: KV_CONNECTION
+            value: "consul://$APP_INSTANCE_NAME-consul"
+          - name: SERVICE_NAME
+            value: "gateway"
+          - name: GATEWAY_MODULES
+            value: "core,inclusion,search,events,dashboard,lineage,descriptor,jobengine"
+          - name: GATEWAYCLIENT_ESCONNECTION
+            value: "elasticsearch://$APP_INSTANCE_NAME-elasticsearch"
+          - name: GATEWAYCLIENT_JECONNECTION
+            value: "http://$APP_INSTANCE_NAME-jobengine:4599/api/v1"
+          - name: GATEWAYCLIENT_DASHBOARDCONNECTION
+            value: "http://$APP_INSTANCE_NAME-dashboard:4080/api/v1"
+          - name: GATEWAYCLIENT_RPCONNECTION
+            value: "http://$APP_INSTANCE_NAME-restproducer:4444/api/v1"
+          - name: GATEWAYCLIENT_INCLUSIONCONNECTION
+            value: "$APP_INSTANCE_NAME-inclusiongist:9713"
+          - name: GATEWAYCLIENT_INDEXERCONNECTION
+            value: "$APP_INSTANCE_NAME-indexer-rpc:9702"
+          - name: GATEWAYCLIENT_LINEAGECONNECTION
+            value: "$APP_INSTANCE_NAME-lineage-rpc:9708"
+          - name: GATEWAYCLIENT_MAPPERCONNECTION
+            value: "$APP_INSTANCE_NAME-mapper:9712"
+          - name: SECURITY_SERVERKEYSTORE
+            value: "/opt/keystore_bundle.jks"
+          resources:
+            limits:
+              cpu: "0.7"
+              memory: 1500Mi
+            requests:
+              cpu: "0.2"
+              memory: 600Mi
+          livenessProbe:
+            initialDelaySeconds: 45
+            periodSeconds: 120
+            timeoutSeconds: 5
+            tcpSocket:
+              port: 9710

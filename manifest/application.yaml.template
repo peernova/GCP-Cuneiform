@@ -1,0 +1,64 @@
+---
+apiVersion: app.k8s.io/v1beta1
+kind: Application
+metadata:
+  name: "$APP_INSTANCE_NAME"
+  namespace: "$NAMESPACE"
+  annotations:
+    kubernetes-engine.cloud.google.com/icon: >-
+      data:image/png;base64,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
+    marketplace.cloud.google.com/deploy-info: '{partner_id: "peernova-public", product_id: "cuneiform", partner_name: "Peernova"}'
+  labels:
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+spec:
+  descriptor:
+    type: Cuneiform
+    version: '3.x.x'
+    description: >-
+      The PeerNova Cuneiform Platform is an innovative platform designed to bring operational insight and increased audit-ability to large financial institutions. It utilizes big data infrastructure, cloud technologies, and blockchain-inspired cryptographic techniques, to provide end-to-end event lineage, state tracking, streaming analytics, data immutability, non-repudiation, and support for complex reconciliation in real-time.
+
+    maintainers:
+    - name: Peernova
+      url: https://peernova.com
+    links:
+    - description: 'User Guide: Google Click to Deploy Cuneiform'
+      url: https://github.com/peernova/GCP-Cuneiform
+    - description: Getting Started with Cuneiform
+      url: https://peernova.com
+    - description: 'Request a License'
+      url: TBD
+    - description: 'Terms and conditions of License'
+      url: TBD
+    notes: |-
+      # Access Cuneiform frontend
+
+      Get the external IP of the Cuneiform frontend in the the Cuneiform info section
+      in the left pane, "Cuneiform Frontend IP" item, and then open your browser 
+      at http://FRONTEND-IP-ADDRESS.
+
+      Once the cluster has been deployed you will be prompted to create an account with Peernova,inc. To request access to create an account you will need to contact Peernova, Inc. The license will provide you with registration access to enable access to GCP on Cuneiform. You will be prompted to create a username and password. Once registration is complete you will be able to use Cuneiform on GCP. 
+
+
+  info:
+  - name: Cuneiform Frontend IP
+    type: Reference
+    valueFrom:
+      serviceRef:
+        name: $APP_INSTANCE_NAME-fe-caddy
+  - name: Cuneiform Swagger External IP
+    type: Reference
+    valueFrom:
+      serviceRef:
+        name: $APP_INSTANCE_NAME-gateway-ext
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+  componentKinds:
+  - group: v1
+    kind: PersistentVolumeClaim
+  - group: apps/v1beta2
+    kind: StatefulSet
+  - group: apps/v1beta2
+    kind: Deployment
+  - group: v1
+    kind: Service

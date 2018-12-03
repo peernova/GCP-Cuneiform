@@ -1,0 +1,438 @@
+{
+	"fields": [{
+			"name": "ACCOUNT_NUMBER",
+			"type": "string",
+			"search": "exact",
+			"nullable": true,
+			"options": {
+				"format": "alphanum",
+				"length": 32
+			}
+		},
+		{
+			"name": "APP_NAME",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["BLOOMBERG", "CAPIQ", "FACTSET", "THOMSON REUTERS"]
+			}
+		},
+		{
+			"name": "USER_ID",
+			"type": "string",
+			"search": "exact",
+			"nullable": true,
+			"options": {
+				"format": "alphanum",
+				"length": 16
+			}
+		},
+		{
+			"name": "INST_ID",
+			"type": "string",
+			"search": "exact",
+			"nullable": true,
+			"options": {
+				"format": "alphanum",
+				"length": 16
+			}
+		},
+		{
+			"name": "INST_NAME",
+			"type": "string",
+			"search": "exact",
+			"nullable": true,
+			"options": {
+				"datatypes": "insts"
+			}
+		},
+		{
+			"name": "TRADER_ID",
+			"type": "string",
+			"search": "exact",
+			"nullable": true,
+			"options": {
+				"format": "alpha",
+				"range": [5, 20]
+			}
+		},
+		{
+			"name": "HIERARCHY_SEQ_NUM",
+			"type": "int",
+			"nullable": true,
+			"options": {
+				"range": [1, 100]
+			}
+		},
+		{
+			"name": "SRC_SYSTEM",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["LEGACY", "HORIZON", "FRONTIER", "DCC", "LIC", "PROTO"]
+			}
+		},
+		{
+			"name": "EVENT_TYPE",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["NEWREQ", "NEWCONF", "CXLREQ", "CXLCONF", "FILLEDREQ", "MODREQ", "MODCONF"]
+			}
+		},
+		{
+			"name": "INSTRUMENT_TYPE",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["Stock", "Bond", "Preferred Stock", "Option", "Futures", "Cash"]
+			}
+		},
+		{
+			"name": "TICKER",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"datatypes": "ticker"
+			}
+		},
+		{
+			"name": "CURRENCY",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"datatypes": "currency-short"
+			}
+		},
+		{
+			"name": "PRICE",
+			"type": "float",
+			"nullable": true,
+			"scale": 4,
+			"options": {
+				"range": [1, 1000000]
+			}
+		},
+		{
+			"name": "QUANTITY",
+			"type": "int",
+			"nullable": true,
+			"options": {
+				"range": [1, 100000]
+			}
+		},
+		{
+			"name": "AMOUNT",
+			"type": "double",
+			"nullable": true,
+			"scale": 2,
+			"options": {
+				"range": [1000, 100000]
+			}
+		},
+		{
+			"name": "BROKER_ID",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"format": "alpha",
+				"range": [5, 20]
+			}
+		},
+		{
+			"name": "STATUS",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["PASS", "FAIL", "CANCELED"]
+			}
+		},
+		{
+			"name": "IS_ACTIVE",
+			"type": "boolean",
+			"nullable": true
+		},
+		{
+			"name": "TRADE_STATUS",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["INPROCESS", "DONE", "CANCELED", "SETTLED", "SUBMITTED"]
+			}
+		},
+		{
+			"name": "TRADE_ID",
+			"type": "string",
+			"search": "exact",
+			"nullable": true,
+			"options": {
+				"format": "alphanum",
+				"length": 32
+			}
+		},
+		{
+			"name": "TRADE_TS",
+			"type": "timestamp",
+			"nullable": true,
+			"options": {
+				"format": "yyyy-MM-dd hh:mm:ss.SSS"
+			}
+		},
+		{
+			"name": "TRADE_TYPE",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["STOP", "BUY", "MARKET", "LIMIT"]
+			}
+		},
+		{
+			"name": "BASE_TRADE_ID",
+			"type": "string",
+			"nullable": true,
+			"options": {
+				"format": "alphanum",
+				"length": 32
+			}
+		},
+		{
+			"name": "APPROVAL_STATUS",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["APPROVED", "REJECTED", "ONHOLD", "DEFERRED"]
+			}
+		},
+		{
+			"name": "CATEGORY",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["CASH", "MARGIN", "RISK", "DEFAULT"]
+			}
+		},
+		{
+			"name": "COMMENTS",
+			"type": "string",
+			"nullable": true
+		},
+		{
+			"name": "TRADEBOOK",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["BLOOMBERG", "REUTERS", "FIDELITY", "ETRADE", "VANGUARD", "MERRILL EDGE"]
+			}
+		},
+		{
+			"name": "CONTRABOOK",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["BROADRIDGE", "IB", "OPTIONS PLACE", "OPTIONS PRO"]
+			}
+		},
+		{
+			"name": "CONTRACT_ID",
+			"type": "long",
+			"nullable": true,
+			"options": {
+				"range": [1, 10000000]
+			}
+		},
+		{
+			"name": "COUNTERPARTY",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"datatypes": "banks"
+			}
+		},
+		{
+			"name": "EVENT_ACTION",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["WITHDRAW", "APPROVE", "REJECT", "CLEAR", "DEFER"]
+			}
+		},
+		{
+			"name": "EVENT_TS",
+			"type": "timestamp",
+			"nullable": true,
+			"options": {
+				"format": "yyyy-MM-dd hh:mm:ss.SSS"
+			}
+		},
+		{
+			"name": "EVENT_REASON",
+			"type": "string",
+			"nullable": true
+		},
+		{
+			"name": "EXTERNAL_ID",
+			"type": "long",
+			"nullable": true,
+			"options": {
+				"range": [1, 10000000]
+			}
+		},
+		{
+			"name": "NOTES_FRONT_OFFICE",
+			"type": "string",
+			"nullable": true
+		},
+		{
+			"name": "NOTES_BACK_OFFICE",
+			"type": "string",
+			"nullable": true
+		},
+		{
+			"name": "NOVATION_ID",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"format": "alphanum",
+				"length": 20
+			}
+		},
+		{
+			"name": "NOVATION_AMOUNT",
+			"type": "double",
+			"nullable": true,
+			"scale": 2,
+			"options": {
+				"range": [1, 10000000]
+			}
+		},
+		{
+			"name": "RELATED_EXCHANGE",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"datatypes": "exchanges"
+			}
+		},
+		{
+			"name": "PRIMARY_BOOK",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["BANK", "REGULATORY", "DERIVATIVES", "AML"]
+			}
+		},
+		{
+			"name": "RISK_ID",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"format": "alphanum",
+				"length": 16
+			}
+		},
+		{
+			"name": "FIXED_RATE",
+			"type": "float",
+			"nullable": true,
+			"scale": 2,
+			"options": {
+				"range": [0, 100]
+			}
+		},
+		{
+			"name": "MATURITY_DATE",
+			"type": "date",
+			"nullable": true,
+			"options": {
+				"format": "yyyy-MM-dd"
+			}
+		},
+		{
+			"name": "FLOATING_RATE_ISDA_INDEX",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["FIDELITY SP500", "VANGUARD TOTAL", "ISHARES FUTURES", "SPDR MIDCAP"]
+			}
+		},
+		{
+			"name": "STRIKE_PRICE",
+			"type": "float",
+			"nullable": true,
+			"scale": 4,
+			"options": {
+				"range": [1, 1000000]
+			}
+		},
+		{
+			"name": "OPTION_TYPE",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["PUT", "CALL", "ETC", "OTC"]
+			}
+		},
+		{
+			"name": "BUY_SELL",
+			"type": "string",
+			"nullable": true,
+			"search": "exact",
+			"options": {
+				"enum": ["BUY", "SELL", "HOLD", "SUSPEND"]
+			}
+		},
+		{
+			"name": "MISCELLANEOUS_BLOB_1",
+			"nullable": true,
+			"type": "string",
+			"default": "",
+			"search": "standard",
+			"options": {
+				"mask": true,
+				"range": [10, 20]
+			}
+		},
+		{
+			"name": "MISCELLANEOUS_BLOB_2",
+			"nullable": true,
+			"type": "string",
+			"default": "",
+			"search": "ignored",
+			"options": {
+				"mask": true,
+				"range": [100, 500]
+			}
+		},
+		{
+			"name": "VERSION",
+			"type": "int",
+			"nullable": true,
+			"options": {
+				"range": [1, 100]
+			}
+		}
+	],
+	"name": "%s"
+}

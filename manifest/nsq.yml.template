@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels: &ServiceLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-nsq
+  name: $APP_INSTANCE_NAME-nsq
+spec:
+  ports:
+  - name: nsqtcp
+    port: 4150
+    protocol: TCP
+  - name: nsqhttp
+    port: 4151
+    protocol: TCP
+  selector: *ServiceLabels
+
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: $APP_INSTANCE_NAME-nsq
+  labels: &DeploymentLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-nsq
+
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  progressDeadlineSeconds: 180
+  selector:
+    matchLabels: *DeploymentLabels
+  template:
+    metadata:
+      labels: *DeploymentLabels
+    spec:
+      hostname: $APP_INSTANCE_NAME-nsq
+      containers:
+        - name: nsq
+          image: $IMAGE_NSQ
+          imagePullPolicy: Always
+          env:
+          - name: NSQ_LOOKUP_HOST
+            value: "$APP_INSTANCE_NAME-nsqlookup"
+          - name: NSQ_HOST
+            value: "$APP_INSTANCE_NAME-nsq"
+          resources:
+            limits:
+              cpu: "0.7"
+              memory: 1500Mi
+            requests:
+              cpu: "0.2"
+              memory: 600Mi
+          livenessProbe:
+            initialDelaySeconds: 45
+            periodSeconds: 120
+            timeoutSeconds: 5
+            tcpSocket:
+              port: 4150
+

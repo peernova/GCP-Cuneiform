@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels: &ServiceLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-mapper
+  name: $APP_INSTANCE_NAME-mapper
+spec:
+  ports:
+  - name: mapper
+    port: 9712
+    protocol: TCP
+  selector: *ServiceLabels
+  clusterIP: None
+---
+
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: $APP_INSTANCE_NAME-mapper
+  labels: &DeploymentLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-mapper
+
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  progressDeadlineSeconds: 180
+  selector:
+    matchLabels: *DeploymentLabels
+  template:
+    metadata:
+      labels: *DeploymentLabels
+    spec:
+      hostname: $APP_INSTANCE_NAME-mapper
+      containers:
+        - name: mapper
+          image: $IMAGE_CUNEIFORM
+          imagePullPolicy: Always
+          env:
+          - name: CONSUL_SERVER
+            value: "consul://$APP_INSTANCE_NAME-consul"
+          - name: KV_CONNECTION
+            value: "consul://$APP_INSTANCE_NAME-consul"
+          - name: SERVICE_NAME
+            value: "mapper"
+          - name: MAPPER_STORAGETIER
+            value: "cassandra://$APP_INSTANCE_NAME-cassandra?keyspace=cuneiform_events,cassandra://$APP_INSTANCE_NAME-cassandra?keyspace=cuneiform_events2"
+          - name: MAPPER_RETENTIONPOLICYDAYS
+            value: "0,0"
+          - name: SECURITY_SERVERKEYSTORE
+            value: "/opt/keystore_bundle.jks"
+          resources:
+            limits:
+              cpu: "0.7"
+              memory: 1500Mi
+            requests:
+              cpu: "0.2"
+              memory: 600Mi
+          livenessProbe:
+            initialDelaySeconds: 45
+            periodSeconds: 120
+            timeoutSeconds: 5
+            tcpSocket:
+              port: 9712

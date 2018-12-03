@@ -1,0 +1,76 @@
+#!/bin/bash
+set -ex 
+
+
+#
+# Must be envsubst'ed with export KAFKA=xxx envsubst '$KAKFA' < FILE.in > FILE
+JE="$NAME-jobengine"
+TIMEOUT=60
+
+
+# submit default internal JE jobs and then demo jobs
+
+curl -m $TIMEOUT -f  -X POST \
+  http://$JE:4599/api/v1/streams/cuneiform \
+  -d '["ingestMerker","eventWriter","indexer","merkleBuilder","pnMerkerToPNWriter","lookUpTable","merkleEvents","pnMerkerToPnRouter"]'
+
+# demo_orders job
+curl -m $TIMEOUT -f -X POST \
+  http://$JE:4599/api/v1/streams \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/json' \
+  -H 'postman-token: 4db3d1f6-3804-8953-972b-61afbb9b16f2' \
+  -d '{
+    "query":"select * from demo_order_1234",
+  "source" : {
+    "name" : "file",
+    "viewName" : "demo_order_1234",
+    "encoding" : "csv",
+    "separator" : ",",
+    "schemaName" : "demo_orders",
+    "path" : "/tmp/demodata/order"
+  },
+  "sink" : {
+    "name" : "kafka",
+    "schemaName" : "demo_orders",
+    "topic" : "in_writer",
+    "encoding" : "canonical",
+    "triggerTime" : "1 second",
+    "bootstrapServers" : "$KAFKA:9092",
+    "numPartitions" : 1,
+    "replicationFactor" : 1
+  }
+}'
+
+
+# demo_executions job
+curl -m $TIMEOUT -f -X POST \
+  http://$JE:4599/api/v1/streams \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/json' \
+  -H 'postman-token: 4a28b21c-01dc-b9ea-b01b-1d65dba6e13c' \
+  -d '{
+    "query":"select * from demo_execution_1234",
+  "source" : {
+    "name" : "file",
+    "viewName" : "demo_execution_1234",
+    "encoding" : "csv",
+    "separator" : ",",
+    "schemaName" : "demo_executions",
+    "path" : "/tmp/demodata/execution"
+  },
+  "sink" : {
+    "name" : "kafka",
+    "schemaName" : "demo_executions",
+    "topic" : "in_writer",
+    "encoding" : "canonical",
+    "triggerTime" : "1 second",
+    "bootstrapServers" : "$KAFKA:9092",
+    "numPartitions" : 1,
+    "replicationFactor" : 1
+  }
+}'
+
+# list all jobs
+curl -m $TIMEOUT -f -k -X GET "http://$JE:4599/api/v1/streams/active" -H "accept: application/json"
+echo "\n"

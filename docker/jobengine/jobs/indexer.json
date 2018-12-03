@@ -1,0 +1,17 @@
+{
+  "query": "select * from indexer_view",
+  "source": {
+    "viewName": "indexer_view",
+    "name":"kafka",
+    "schemaName":"legacy_cash360_ingest_schema",
+    "topic":"in_writer",
+    "encoding":"canonical"
+  },
+  "sink": {
+    "name": "elasticsearch",
+    "index": "legacy_cash360_ingest_schema",
+    "type": "legacy_cash360_ingest_schema",
+    "port":9200,
+    "_id":"index_uid"
+  }
+}

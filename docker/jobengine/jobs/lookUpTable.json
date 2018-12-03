@@ -1,0 +1,17 @@
+{
+  "query":"SELECT  tup.uid as uid, uid as uidm from (select uid,explode(tuples) as tup from lookup_view) ",
+  "source":{
+    "viewName": "lookup_view",
+    "name":"kafka",
+    "schemaName":"merklemessage",
+    "encoding":"canonical",
+    "topic":"pn_merker"
+  },
+  "sink":{
+    "name":"cassandra",
+    "keyspace": "cuneiform_events",
+    "partitionKey": ["uid"],
+    "tableName": "uid",
+    "createTableStatement":"CREATE TABLE IF NOT EXISTS cuneiform_events.uid (uid  timeuuid, uidm timeuuid, PRIMARY KEY (uid));"
+  }
+}

@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels: &ServiceLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-hdfs-namenode
+  name: $APP_INSTANCE_NAME-hdfs
+spec:
+  ports:
+  - name: hf
+    port: 9000
+    protocol: TCP
+  - name: ui
+    port: 50070
+    protocol: TCP
+  selector: *ServiceLabels
+  clusterIP: None
+
+---
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: $APP_INSTANCE_NAME-hdfs-namenode
+  labels: &DeploymentLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-hdfs-namenode
+
+spec:
+  serviceName: $APP_INSTANCE_NAME-hdfs-namenode
+  replicas: 1
+  selector:
+    matchLabels: *DeploymentLabels
+  template:
+    metadata:
+      labels: *DeploymentLabels
+    spec:
+      hostname: $APP_INSTANCE_NAME-hdfs-namenode
+      containers:
+        - name: hdfs-namenode
+          image: $IMAGE_HDFS_NAMENODE
+          imagePullPolicy: Always
+          env:
+          - name: NAME_PREFIX
+            value: "$APP_INSTANCE_NAME"
+          - name: NAME_SUFFIX
+            value: ""
+          - name: HDFS_NODES
+            value: "2"
+          volumeMounts:
+          - name: $APP_INSTANCE_NAME-hdfs-namenode-data
+            mountPath: /usr/local/hdfs/namenode
+          resources:
+            limits:
+              cpu: "1.6"
+              memory: 8Gi
+            requests:
+              cpu: "0.5"
+              memory: 3200Mi
+          livenessProbe:
+            initialDelaySeconds: 45
+            periodSeconds: 120
+            timeoutSeconds: 5
+            tcpSocket:
+              port: 9000
+  volumeClaimTemplates:
+  - metadata:
+      name: $APP_INSTANCE_NAME-hdfs-namenode-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 20Gi

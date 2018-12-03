@@ -1,0 +1,43 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: $APP_INSTANCE_NAME-router
+  labels: &DeploymentLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-router
+
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  progressDeadlineSeconds: 180
+  selector:
+    matchLabels: *DeploymentLabels
+  template:
+    metadata:
+      labels: *DeploymentLabels
+    spec:
+      hostname: $APP_INSTANCE_NAME-router
+      containers:
+        - name: router
+          image: $IMAGE_CUNEIFORM
+          imagePullPolicy: Always
+          env:
+          - name: CONSUL_SERVER
+            value: "consul://$APP_INSTANCE_NAME-consul"
+          - name: KV_CONNECTION
+            value: "consul://$APP_INSTANCE_NAME-consul"
+          - name: SERVICE_NAME
+            value: "router --routercp.frequencycount=1"
+          - name: ROUTER_SRCKAFKACONNECTION
+            value: "kafka://$APP_INSTANCE_NAME-kafka?topic=pn_router&group=router"
+          - name: ROUTER_SINKKAFKACONNECTION
+            value: "kafka://$APP_INSTANCE_NAME-kafka?topic=in_merker"
+          - name: ROUTERCP_TARGETKAFKACONNECTION
+            value: "kafka://$APP_INSTANCE_NAME-kafka?topic=pn_dispatcher_cp"
+          resources:
+            limits:
+              cpu: "0.5"
+              memory: 2Gi
+            requests:
+              cpu: "0.3"
+              memory: 1Gi

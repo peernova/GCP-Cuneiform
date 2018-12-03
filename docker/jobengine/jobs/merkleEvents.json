@@ -1,0 +1,17 @@
+{
+  "query":"select uuid_to_timestamp(uid,5) tsp, uid, value as data, merkle as did from data_table pn_events",
+  "source":{
+    "viewName": "jsonschemaView",
+    "name":"kafka",
+    "schemaName":"merklemessage",
+    "encoding":"canonical",
+    "topic":"pn_writer"
+  },
+  "sink":{
+    "name":"cassandra",
+    "keyspace": "cuneiform_events",
+    "partitionKey": ["tsp"],
+    "clusteringKey": ["uid"],
+    "tableName": "events"
+  }
+}

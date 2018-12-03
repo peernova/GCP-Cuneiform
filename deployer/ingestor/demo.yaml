@@ -1,0 +1,141 @@
+---
+parser: 'lua v1'
+name: CLIENT2
+ldl:
+  rules:
+# Start of client2 lineage
+  - schema: demo_orders
+    prerequisites:
+      glb_hrchy_seq: 1
+    child_ids:
+      - - sys_order_id
+    display_fields:
+      - - glb_root_order_id
+        - glb_hrchy_seq
+        - sys_order_id
+        - event_type_cd
+        - getDate:
+            field: event_ts
+            field_type: UnixTime
+            output_format: "2006-01-02 15:04:05.999"
+        - src_sys
+        - order_qty
+    series:
+    - - id:
+        - sys_order_id
+        order_by:
+          event_type_cd: event_type_states
+# EX messages of glb_hrchy_seq 1
+  - schema: demo_executions
+    prerequisites:
+      glb_hrchy_seq: 1
+    child_ids:
+      - - sys_order_id
+        - event_type_cd
+    parent_ids:
+      - - sys_order_id
+    display_fields:
+      - - glb_root_order_id
+        - glb_hrchy_seq
+        - sys_order_id
+        - sys_exec_id
+        - event_type_cd
+        - getDate:
+            field: entry_ts
+            field_type: UnixTime
+            output_format: "2006-01-02 15:04:05.999"
+        - src_sys
+        - executed_qty
+    series:
+    - - id:
+        - sys_order_id
+        - event_type_cd
+        order_by:
+          entry_ts: '<'
+# TX Messages using SYS_ROOT_ORDER_ID to link
+  - schema: demo_orders
+    prerequisites:
+      glb_hrchy_seq:
+        not: 1
+      sys_root_order_id:
+        not: 'NULL'
+    child_ids:
+      - - sys_order_id
+    parent_ids:
+      - - sys_root_order_id
+    display_fields:
+      - - glb_root_order_id
+        - glb_hrchy_seq
+        - sys_order_id
+        - sys_root_order_id
+        - event_type_cd
+        - getDate:
+            field: event_ts
+            field_type: UnixTime
+            output_format: "2006-01-02 15:04:05.999"
+        - src_sys
+        - order_qty
+    series:
+    - - id:
+        - sys_order_id
+        order_by:
+          event_type_cd: event_type_states
+# Messages using SYS_PARENT_ORDER_ID to link
+  - schema: demo_orders
+    prerequisites:
+      glb_hrchy_seq:
+        not: 1
+      sys_parent_order_id:
+        not: 'NULL'
+    child_ids:
+      - - sys_order_id
+    parent_ids:
+      - - sys_parent_order_id
+    display_fields:
+      - - glb_root_order_id
+        - glb_hrchy_seq
+        - sys_order_id
+        - sys_parent_order_id
+        - event_type_cd
+        - getDate:
+            field: event_ts
+            field_type: UnixTime
+            output_format: "2006-01-02 15:04:05.999"
+        - src_sys
+        - order_qty
+    series:
+    - - id:
+        - sys_order_id
+        order_by:
+          event_type_cd: event_type_states
+# EX Messages
+  - schema: demo_executions
+    prerequisites:
+      glb_hrchy_seq:
+        not: 1
+    child_ids:
+      - - sys_order_id
+        - event_type_cd
+    parent_ids:
+      - - sys_order_id
+    display_fields:
+      - - glb_root_order_id
+        - glb_hrchy_seq
+        - sys_order_id
+        - sys_exec_id
+        - event_type_cd
+        - getDate:
+            field: entry_ts
+            field_type: UnixTime
+            output_format: "2006-01-02 15:04:05.999"
+        - src_sys
+        - executed_qty
+    series:
+    - - id:
+        - sys_order_id
+        - event_type_cd
+        order_by:
+          entry_ts: '<'
+  meta_data:
+    ordered_lists:
+      event_type_states: [NEW_REQ, NEW_CONF, MOD_REQ, MOD_CONF, CXL_REQ, CXL_CONF]

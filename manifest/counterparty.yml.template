@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels: &ServiceLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-counterparty
+  name: $APP_INSTANCE_NAME-counterparty
+spec:
+  ports:
+  - name: cp
+    port: 9714
+    protocol: TCP
+  selector: *ServiceLabels
+  clusterIP: None
+
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: $APP_INSTANCE_NAME-counterparty
+  labels: &DeploymentLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-counterparty
+
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  progressDeadlineSeconds: 180
+  selector:
+    matchLabels: *DeploymentLabels
+  template:
+    metadata:
+      labels: *DeploymentLabels
+    spec:
+      hostname: $APP_INSTANCE_NAME-counterparty
+      containers:
+        - name: counterparty
+          image: $IMAGE_COUNTERPARTY
+          imagePullPolicy: Always
+          env:
+          - name: CONSUL_SERVER
+            value: "consul://$APP_INSTANCE_NAME-consul"
+          - name: COUNTERPARTY_ROOTDIR
+            value: "/home/root/counterparty"
+          - name: COUNTERPARTY_CONFIGFILENAME
+            value: "config/myTSA.cnf"
+          - name: COUNTERPARTY_CONFIGFILETEMPLATE
+            value: "config/template/tsa_template.txt"
+          - name: COUNTERPARTY_BUNDLEKEYSTOREPATH
+            value: "/opt/keystore_bundle.jks"
+          - name: COUNTERPARTY_TSAKEYSTOREPATH
+            value: "/opt/keystore_tsa.jks"
+          - name: COUNTERPARTY_CACERT
+            value: "certificates/root_ca.peernova.com.cer"
+          - name: COUNTERPARTY_CACHAINCERT
+            value: "certificates/root_ca.peernova.com.cer"
+          - name: COUNTERPARTY_SERVERKEY
+            value: "key/root_ca_timestamp_kp.key"
+          - name: COUNTERPARTY_TSACERT
+            value: "certificates/root_timestamping.cer"
+          - name: COUNTERPARTY_SERIALFILE
+            value: "tsa_serial"
+          - name: COUNTERPARTY_TEMPDIR
+            value: "/tmp"
+          - name: SECURITY_SERVERKEYSTORE
+            value: "/opt/keystore_bundle.jks"
+          resources:
+            limits:
+              cpu: "0.7"
+              memory: 1500Mi
+            requests:
+              cpu: "0.2"
+              memory: 600Mi
+          livenessProbe:
+            initialDelaySeconds: 45
+            periodSeconds: 120
+            timeoutSeconds: 5
+            tcpSocket:
+              port: 9714
+

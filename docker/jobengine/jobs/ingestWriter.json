@@ -1,0 +1,18 @@
+// assuming source as simulator output.
+{
+  "query":"SELECT * from view_1",
+  "source":{
+    "schemaName":"legacy_cash360_schema",
+    "viewName": "view_1",
+    "name":"kafka",
+    "encoding":"digital_pulse",
+    "topic":"pn_jobengine_test",
+    "bootstrap.servers":"172.32.31.16:9092"
+  },
+  "sink":{
+    "name":"kafka",
+    "schemaName":"ingest_schema",
+    "topic":"in_writer",
+    "bootstrap.servers":"172.32.31.16:9092"
+  }
+}

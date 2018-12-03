@@ -1,0 +1,58 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: $APP_INSTANCE_NAME-lineage
+  labels: &DeploymentLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-lineage
+
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  progressDeadlineSeconds: 180
+  selector:
+    matchLabels: *DeploymentLabels
+  template:
+    metadata:
+      labels: *DeploymentLabels
+    spec:
+      containers:
+        - name: lineage
+          image: $IMAGE_CUNEIFORM
+          imagePullPolicy: Always
+          env:
+          - name: CONSUL_SERVER
+            value: "consul://$APP_INSTANCE_NAME-consul"
+          - name: KV_CONNECTION
+            value: "consul://$APP_INSTANCE_NAME-consul"
+          - name: SERVICE_NAME
+            value: "lineage"
+          - name: LINEAGE_SRCCONNECTION
+            value: "cassandra://$APP_INSTANCE_NAME-cassandra?keyspace=cuneiform_events"
+          - name: LINEAGE_CQLCONNECTION
+            value: "cassandra://$APP_INSTANCE_NAME-cassandra?keyspace=lineage"
+          - name: LINEAGE_ESCONNECTION
+            value: "elasticsearch://$APP_INSTANCE_NAME-elasticsearch"
+          - name: LINEAGE_KAFKACONNECTIONSRC
+            value: "kafka://$APP_INSTANCE_NAME-kafka?topic=in_writer&group=lineage"
+          - name: LINEAGE_KAFKACONNECTIONPROD
+            value: "kafka://$APP_INSTANCE_NAME-kafka?topic=lineageevents"
+          - name: LINEAGE_NSQ_NSQDTCPCONNECTION
+            value: "nsq-tcp://$APP_INSTANCE_NAME-nsq"
+          - name: LINEAGE_NSQ_NSQDHTTPCONNECTION
+            value: "nsq-http://$APP_INSTANCE_NAME-nsq"
+          - name: LINEAGE_NSQ_NSQLOOKUPHTTPCONNECTION
+            value: "nsq-lookup-http://$APP_INSTANCE_NAME-nsqlookup"
+          - name: LINEAGE_NSQ_NSQLOOKUPTCPCONNECTION
+            value: "nsq-lookup-tcp://$APP_INSTANCE_NAME-nsqlookup"
+          - name: LINEAGE_DROPPEDLOG
+            value: "/opt/droppedMessages.log"
+          - name: SECURITY_SERVERKEYSTORE
+            value: "/opt/keystore_bundle.jks"
+          resources:
+            limits:
+              cpu: "0.7"
+              memory: 1500Mi
+            requests:
+              cpu: "0.2"
+              memory: 600Mi

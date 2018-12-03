@@ -1,0 +1,92 @@
+---
+parser: 'lua v1'
+name: %s
+ldl:
+  rules:
+  # time series in schema demo_trade
+  - category: BLOOMBERG # from APP_NAME
+    schema: %s
+    child_ids:
+    - - USER_ID
+    series:
+    - - id: USER_ID
+        order_by:
+          TRADE_TS: '<'
+    display_fields:
+      - - USER_ID
+        - getDate:
+            field: TRADE_TS
+            field_type: UnixTime
+            output_format: "2006-01-02 15:04:05.999"
+        - QUANTITY
+        - APP_NAME
+  # time series in schema demo_execution
+  - category: FEDERAL # from INST_TYPE
+    schema: %s
+    child_ids:
+    - - CUST_ID
+    series:
+    - - id: CUST_ID
+        order_by:
+          TRADE_TS: '<'
+    display_fields:
+    - - CUST_ID
+      - getDate:
+          field: TRADE_TS
+          field_type: UnixTime
+          output_format: "2006-01-02 15:04:05.999"
+      - QUANTITY
+      - INST_TYPE
+
+  # fan in CHILD in schema demo_execution
+  - category: STATE # from LOAN_TYPE
+    schema: %s
+    child_ids:
+    - - getDate:
+          field: TRANS_DATE
+          field_type: Date
+          output_format: "2006-01-02"
+      - CUST_ID
+    display_fields:
+    - - CUST_ID
+      - getDate:
+          field: TRANS_DATE
+          field_type: Date
+          output_format: "2006-01-02"
+      - AMOUNT
+      - LOAN_TYPE
+  # fan in AGGR in demo_execution
+  - category: LOAN_DAILY_BAL # from LOAN_TYPE
+    schema: %s
+    parent_ids:
+    - - getDate:
+          field: TRANS_DATE
+          field_type: Date
+          output_format: "2006-01-02"
+      - CUST_ID
+    display_fields:
+    - - CUST_ID
+      - getDate:
+          field: TRANS_DATE
+          field_type: Date
+          output_format: "2006-01-02"
+      - AMOUNT
+      - LOAN_TYPE
+
+  # fan out in schema demo_trade
+  - category: CAPIQ # FROM APP_NAME
+    schema: %s
+    child_ids:
+    - - TRADE_ID
+    parent_ids:
+    - - BASE_TRADE_ID
+    display_fields:
+    - - TRADE_ID
+      - BASE_TRADE_ID
+      - getDate:
+          field: TRADE_TS
+          field_type: UnixTime
+          output_format: "2006-01-02 15:04:05.999"
+      - AMOUNT
+      - CURRENCY
+      - APP_NAME

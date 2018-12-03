@@ -1,0 +1,139 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels: &ServiceLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-jobengine
+  name: $APP_INSTANCE_NAME-jobengine
+spec:
+  ports:
+  - name: je
+    port: 4599
+    protocol: TCP
+  selector: *ServiceLabels
+  clusterIP: None
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: $APP_INSTANCE_NAME-jobengine
+  labels: &DeploymentLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-jobengine
+
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  progressDeadlineSeconds: 180
+  selector:
+    matchLabels: *DeploymentLabels
+  template:
+    metadata:
+      labels: *DeploymentLabels
+    spec:
+      hostname: $APP_INSTANCE_NAME-jobengine
+      containers:
+        - name: jobengine
+          image: $IMAGE_JOBENGINE
+          imagePullPolicy: Always
+          env:
+          - name: NAME_PREFIX
+            value: "$APP_INSTANCE_NAME"
+          - name: NAME_SUFFIX
+            value: ""
+          - name: LIVY_HOST
+            value: "$APP_INSTANCE_NAME-apache-livy"
+          - name: LIVY_PORT
+            value: "8998"
+          - name: LIVY_JAR
+            value: "/apps/peernova/jobengine.jar"
+          - name: KAFKA_PRODUCER_BOOTSTRAP_SERVERS
+            value: "$APP_INSTANCE_NAME-kafka:9092"
+          - name: KAFKA_CONSUMER_SETTINGS_AUTO_OFFSET_RESET
+            value: "earliest"
+          - name: KAFKA_CONSUMER_SETTINGS_BOOTSTRAP_SERVERS
+            value: "$APP_INSTANCE_NAME-kafka:9092"
+          - name: KAFKA_CONSUMER_SETTINGS_MAX_OFFSETS_PER_TRIGGER
+            value: "5000"
+          - name: KAFKA_CONSUMER_SETTINGS_PARTITIONS
+            value: "1"
+          - name: KAFKA_CONSUMER_SETTINGS_REPLICATION_FACTOR
+            value: "1"
+          - name: PN_NAMESPACE
+            value: ""
+          - name: PN_APPNAME
+            value: "payments"
+          - name: HASH_ALGORITHM
+            value: "MD5"
+          - name: CASSANDRA_HOST
+            value: "$APP_INSTANCE_NAME-cassandra"
+          - name: CASSANDRA_PORT
+            value: "9042"
+          - name: CASSANDRA_USER
+            value: "cassandra"
+          - name: CASSANDRA_PASS
+            value: "cassandra"
+          - name: CASSANDRA_EVENTS_KEYSPACE
+            value: "cuneiform_events"
+          - name: CASSANDRA_EVENTS_TABLENAME
+            value: "events"
+          - name: ELASTIC_HOST
+            value: "$APP_INSTANCE_NAME-elasticsearch"
+          - name: ELASTIC_PORT
+            value: "9200"
+          - name: ELASTIC_SCHEME
+            value: "http"
+          - name: MONGO_HOST
+            value: "$APP_INSTANCE_NAME-mongodb"
+          - name: MONGO_PORT
+            value: "27017"
+          - name: MONGO_DATABASE
+            value: "querydb"
+          - name: MONGO_COLLECTION_STREAMING
+            value: "streamingqueries"
+          - name: MONGO_COLLECTION_TRANSFORM
+            value: "transformqueries"
+          - name: MONGO_COLLECTION_BATCH
+            value: "batchqueries"
+          - name: MONGO_COLLECTION_MULTISOURCE
+            value: "multisourcequeries"
+          - name: MONGO_COLLECTION_SUPERIMPOSE
+            value: "superimposequeries"
+          - name: CONSUL_HOST
+            value: "$APP_INSTANCE_NAME-consul"
+          - name: CONSUL_PORT
+            value: "8500"
+          - name: INGESTOR_ERROR_TOPIC
+            value: "incompatible_ingest_avro"
+          - name: INGESTOR_ERROR_BOOTSTRAP_SERVERS
+            value: "$APP_INSTANCE_NAME-kafka:9092"
+          - name: INGESTOR_ENCODING
+            value: "avro_json"
+          - name: BASE_CHECKPOINT_DIR
+            value: "/tmp"
+          - name: JOBGATEWAY_HOST
+            value: "0.0.0.0"
+          - name: JOBGATEWAY_PORT
+            value: "4599"
+          - name: IGNITE_DRIVER
+            value: "org.apache.ignite.IgniteJdbcThinDriver"
+          - name: IGNITE_HOST
+            value: "jdbc:ignite:thin://0.0.0.0"
+          - name: HDFS_URI
+            value: "hdfs://$APP_INSTANCE_NAME-hdfs:9000"
+          resources:
+            limits:
+              cpu: "3.1"
+              memory: 8Gi
+            requests:
+              cpu: "0.9"
+              memory: 3300Mi
+          livenessProbe:
+            initialDelaySeconds: 80
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 2 
+            httpGet:
+              path: /api/v1/udf/list
+              port: 4599
+

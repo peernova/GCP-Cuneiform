@@ -1,0 +1,178 @@
+application_api_version: v1beta1
+clusterAgreement:
+   type: string
+   title: Cluster Size Requirements 
+   description: Type YES to agree to minimum GKE cluster requirements (min. 5 n1-standard-8 nodes)
+   pattern: "^YES|yes$"
+properties:
+  APP_INSTANCE_NAME:
+    type: string
+    x-google-marketplace:
+      type: NAME
+  NAMESPACE:
+    type: string
+    x-google-marketplace:
+      type: NAMESPACE
+  IMAGE_CUNEIFORM:
+    type: string
+    default: $REGISTRY:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_COUNTERPARTY:
+    type: string
+    default: $REGISTRY/counterparty:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_HDFS_DATANODE:
+    type: string
+    default: $REGISTRY/hdfs-datanode-2.7.3:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_HDFS_NAMENODE:
+    type: string
+    default: $REGISTRY/hdfs-namenode-2.7.3:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_JOBENGINE:
+    type: string
+    default: $REGISTRY/jobengine:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_LIVY:
+    type: string
+    default: $REGISTRY/livy-0.4:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_REST_PRODUCER:
+    type: string
+    default: $REGISTRY/rest-producer:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_SPARK_DASHBOARD:
+    type: string
+    default: $REGISTRY/spark-dashboard:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_YARN_RM:
+    type: string
+    default: $REGISTRY/yarn-rm-2.7.3:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_YARN_NM:
+    type: string
+    default: $REGISTRY/yarn-nm-2.7.3:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_ELASTICSEARCH:
+    type: string
+    default: $REGISTRY/elasticsearch-5.6.9:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_ELASTICSEARCH_RESTORE:
+    type: string
+    default: $REGISTRY/elasticsearch-restore:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_KAFKA:
+    type: string
+    default: $REGISTRY/kafka-0.10.2:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_NSQ:
+    type: string
+    default: $REGISTRY/nsq:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_NSQ_LOOKUP:
+    type: string
+    default: $REGISTRY/nsq-lookup:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_ZOOKEEPER:
+    type: string
+    default: $REGISTRY/zookeeper-3.4.11:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_CONSUL:
+    type: string
+    default: $REGISTRY/consul-1.1.0:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_CASSANDRA:
+    type: string
+    default: $REGISTRY/cassandra-3.11:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_CASSANDRA_RESTORE:
+    type: string
+    default: $REGISTRY/cassandra-restore:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_DBSETUP:
+    type: string
+    default: $REGISTRY/dbsetup:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_PN_DOCS:
+    type: string
+    default: $REGISTRY/pn-docs:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_FE_CADDY:
+    type: string
+    default: $REGISTRY/fe-caddy:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_FE_PLATFORM:
+    type: string
+    default: $REGISTRY/fe-platform:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_MW_ANALYTICS:
+    type: string
+    default: $REGISTRY/mw-analytics:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_MW_ANCHOR:
+    type: string
+    default: $REGISTRY/mw-anchor:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_MW_SEARCH:
+    type: string
+    default: $REGISTRY/mw-search:$TAG
+    x-google-marketplace:
+      type: IMAGE
+  IMAGE_MW_LINEAGE:
+    type: string
+    default: $REGISTRY/mw-lineage:$TAG
+    x-google-marketplace:
+      type: IMAGE
+required:
+- APP_INSTANCE_NAME
+- NAMESPACE
+- IMAGE_CUNEIFORM
+- IMAGE_COUNTERPARTY
+- IMAGE_HDFS_DATANODE
+- IMAGE_HDFS_NAMENODE
+- IMAGE_JOBENGINE
+- IMAGE_LIVY
+- IMAGE_REST_PRODUCER
+- IMAGE_SPARK_DASHBOARD
+- IMAGE_YARN_RM
+- IMAGE_YARN_NM
+- IMAGE_ELASTICSEARCH
+- IMAGE_ELASTICSEARCH_RESTORE
+- IMAGE_KAFKA
+- IMAGE_NSQ_LOOKUP
+- IMAGE_NSQ
+- IMAGE_ZOOKEEPER
+- IMAGE_CONSUL
+- IMAGE_CASSANDRA_RESTORE
+- IMAGE_DBSETUP
+- IMAGE_FE_CADDY
+- IMAGE_FE_PLATFORM
+- IMAGE_MW_ANCHOR
+- IMAGE_MW_ANALYTICS
+- IMAGE_MW_LINEAGE
+- IMAGE_MW_SEARCH

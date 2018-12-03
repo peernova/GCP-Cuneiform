@@ -1,0 +1,6 @@
+{
+  "script": {
+    "lang": "painless",
+    "source": "def sf = new SimpleDateFormat(\"yyyy-MM-dd'T'HH:mm:ss\"); if(ctx._source.APPLICATION_MNEMONIC == 'BDC' && params._source.APPLICATION_MNEMONIC == 'BDC') {if (sf.parse(ctx._source.TIMESTAMP_5).before(sf.parse(params._source.TIMESTAMP_5))) {ctx._source = params._source } } else if (ctx._source.APPLICATION_MNEMONIC == 'BDC' && params._source.APPLICATION_MNEMONIC != 'BDC') {if (sf.parse(ctx._source.TIMESTAMP_5).before(sf.parse(params._source.LAST_ACTIVITY_TIME_STAMP))) {ctx._source = params._source } } else if (ctx._source.APPLICATION_MNEMONIC != 'BDC' && params._source.APPLICATION_MNEMONIC == 'BDC') {if (sf.parse(ctx._source.LAST_ACTIVITY_TIME_STAMP).before(sf.parse(params._source.TIMESTAMP_5))) {ctx._source = params._source } } else if (ctx._source.APPLICATION_MNEMONIC != 'BDC' && params._source.APPLICATION_MNEMONIC != 'BDC') {if (sf.parse(ctx._source.LAST_ACTIVITY_TIME_STAMP).before(sf.parse(params._source.LAST_ACTIVITY_TIME_STAMP))) {ctx._source = params._source } }"
+  }
+}

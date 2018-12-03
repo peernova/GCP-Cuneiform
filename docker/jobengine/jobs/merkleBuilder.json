@@ -1,0 +1,18 @@
+{
+  "query":"SELECT mb_merkle as merkle, mb_uid as uid, tuples from merkle_view merkleBuilder",
+  "source":{
+    "maxOffsetsPerTrigger":"1000",
+    "schemaName":"legacy_cash360_ingest_schema",
+    "topic":"in_merker",
+    "viewName": "flat_canonical",
+    "name":"kafka",
+    "encoding":"canonical"
+  },
+  "sink":{
+    "name":"kafka",
+    "schemaName":"merklemessage",
+    "encoding":"canonical",
+    "topic":"pn_merker",
+    "triggerTime":"30 seconds"
+  }
+}

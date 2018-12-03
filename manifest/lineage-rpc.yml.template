@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels: &ServiceLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-lineage-rpc
+  name: $APP_INSTANCE_NAME-lineage-rpc
+spec:
+  ports:
+  - name: lineage-rpc
+    port: 9708
+    protocol: TCP
+  selector: *ServiceLabels
+  clusterIP: None
+---
+
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  labels: &DeploymentLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-lineage-rpc
+  name: $APP_INSTANCE_NAME-lineage-rpc
+
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  progressDeadlineSeconds: 180
+  selector:
+    matchLabels: *DeploymentLabels
+  template:
+    metadata:
+      labels: *DeploymentLabels
+    spec:
+      hostname: $APP_INSTANCE_NAME-lineage-rpc
+      containers:
+        - name: lineage-rpc
+          image: $IMAGE_CUNEIFORM
+          imagePullPolicy: Always
+          env:
+          - name: CONSUL_SERVER
+            value: "consul://$APP_INSTANCE_NAME-consul"
+          - name: KV_CONNECTION
+            value: "consul://$APP_INSTANCE_NAME-consul"
+          - name: SERVICE_NAME
+            value: "lineage-rpc"
+          - name: LINEAGE_SRCCONNECTION
+            value: "cassandra://$APP_INSTANCE_NAME-cassandra?keyspace=cuneiform_events"
+          - name: LINEAGE_CQLCONNECTION
+            value: "cassandra://$APP_INSTANCE_NAME-cassandra?keyspace=lineage"
+          - name: LINEAGE_ESCONNECTION
+            value: "elasticsearch://$APP_INSTANCE_NAME-elasticsearch"
+          - name: LINEAGE_KAFKACONNECTIONSRC
+            value: "kafka://$APP_INSTANCE_NAME-kafka?topic=in_writer&group=lineage"
+          - name: LINEAGE_KAFKACONNECTIONPROD
+            value: "kafka://$APP_INSTANCE_NAME-kafka?topic=lineageevents"
+          - name: LINEAGE_NSQ_NSQDTCPCONNECTION
+            value: "nsq-tcp://$APP_INSTANCE_NAME-nsq"
+          - name: LINEAGE_NSQ_NSQDHTTPCONNECTION
+            value: "nsq-http://$APP_INSTANCE_NAME-nsq"
+          - name: LINEAGE_NSQ_NSQLOOKUPHTTPCONNECTION
+            value: "nsq-lookup-http://$APP_INSTANCE_NAME-nsqlookup"
+          - name: LINEAGE_NSQ_NSQLOOKUPTCPCONNECTION
+            value: "nsq-lookup-tcp://$APP_INSTANCE_NAME-nsqlookup"
+          - name: LINEAGE_DROPPEDLOG
+            value: "/opt/droppedMessages.log"
+          - name: SECURITY_SERVERKEYSTORE
+            value: "/opt/keystore_bundle.jks"
+          resources:
+            limits:
+              cpu: "0.7"
+              memory: 1500Mi
+            requests:
+              cpu: "0.2"
+              memory: 600Mi
+          livenessProbe:
+            initialDelaySeconds: 45
+            periodSeconds: 120
+            timeoutSeconds: 5
+            tcpSocket:
+              port: 9708

@@ -1,0 +1,16 @@
+{
+  "query":"SELECT * from data_table pn_merker_to_pn_writer  ",
+  "source":{
+    "viewName": "mon0237",
+    "name":"kafka",
+    "schemaName":"merklemessage",
+    "encoding":"canonical",
+    "topic":"pn_merker"
+  },
+  "sink":{
+    "name":"kafka",
+    "schemaName":"merklemessage",
+    "encoding":"canonical",
+    "topic":"pn_writer"
+  }
+}

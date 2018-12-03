@@ -1,0 +1,16 @@
+{
+  "query":"SELECT * from data_table inwriter_to_inmerker",
+  "source":{
+    "viewName": "mon0232",
+    "name":"kafka",
+    "schemaName":"legacy_cash360_ingest_schema",
+    "encoding":"canonical",
+    "topic":"in_writer"
+  },
+  "sink":{
+    "name":"kafka",
+    "schemaName":"legacy_cash360_ingest_schema",
+    "encoding":"canonical",
+    "topic":"in_merker"
+  }
+}

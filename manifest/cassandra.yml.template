@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels: &ServiceLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-cassandra
+  name: $APP_INSTANCE_NAME-cassandra
+spec:
+  ports:
+  - name: cqlsh
+    port: 9042
+    protocol: TCP
+  - name: jmx
+    port: 7071
+    protocol: TCP
+  selector: *ServiceLabels
+  clusterIP: None
+
+---
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: $APP_INSTANCE_NAME-cassandra
+  labels: &DeploymentLabels
+    app.kubernetes.io/name: "$APP_INSTANCE_NAME"
+    app.kubernetes.io/component: cuneiform-cassandra
+
+spec:
+  serviceName: cassandra
+  replicas: 1
+  selector:
+    matchLabels: *DeploymentLabels
+  template:
+    metadata:
+      labels: *DeploymentLabels
+    spec:
+      securityContext:
+#        runAsUser: 999
+        fsGroup: 999
+
+      containers:
+        - name: cassandra
+          image: $IMAGE_CASSANDRA
+          imagePullPolicy: Always
+          env:
+          - name: MASTER
+            value: "false"
+          volumeMounts:
+          - name: $APP_INSTANCE_NAME-cassandra-data
+            mountPath: /var/lib/cassandra
+          resources:
+            limits:
+              cpu: "1.5"
+              memory: 8Gi
+            requests:
+              cpu: "0.5"
+              memory: "3.2Gi"
+          livenessProbe:
+            initialDelaySeconds: 60
+            periodSeconds: 120
+            timeoutSeconds: 5
+            tcpSocket:
+              port: 9042
+      initContainers:
+        - name: restore
+          image: $IMAGE_CASSANDRA_RESTORE
+          imagePullPolicy: Always
+#          command: ['sh', '-c', 'echo The app is running! && sleep 6']
+          volumeMounts:
+          - name: $APP_INSTANCE_NAME-cassandra-data
+            mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: $APP_INSTANCE_NAME-cassandra-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 20Gi
