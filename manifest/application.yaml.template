@@ -15,7 +15,7 @@ spec:
     type: Cuneiform
     version: '3.x.x'
     description: >-
-      The PeerNova Cuneiform Platform is an innovative platform designed to bring operational insight and increased audit-ability to large financial institutions. It utilizes big data infrastructure, cloud technologies, and blockchain-inspired cryptographic techniques, to provide end-to-end event lineage, state tracking, streaming analytics, data immutability, non-repudiation, and support for complex reconciliation in real-time.
+      PeerNova enables financial institutions around the world to securely and verifiably manage their data and address their challenges with post-trade processing, reconciliation, and compliance using a blockchain-based Distributed Ledger Technology (DLT) solution. For more information about PeerNova and its Cuneiform® Platform, please visit https://peernova.com.
 
     maintainers:
     - name: Peernova
@@ -26,9 +26,9 @@ spec:
     - description: Getting Started with Cuneiform
       url: https://peernova.com
     - description: 'Request a License'
-      url: TBD
-    - description: 'Terms and conditions of License'
-      url: TBD
+      url: https://peernova.com/support-form/
+    - description: 'EULA'
+      url: https://peernova.com/gcp-eula/
     notes: |-
       # Access Cuneiform frontend
 
