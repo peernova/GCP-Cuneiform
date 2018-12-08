@@ -70,7 +70,7 @@ create_manifests.sh
 
 # Apply the manifest.
 #kubectl apply --namespace="$NAMESPACE" --filename="/data/resources.yaml"
-start-all.sh
+start-all.sh $app_api_version $app_uid $NAME
 
 # Update FE's ip addresses settings
 export MANIFEST_DIR=/data/manifest 
