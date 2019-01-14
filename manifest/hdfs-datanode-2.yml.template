@@ -84,11 +84,15 @@ spec:
               cpu: "0.9"
               memory: 3200Mi
           livenessProbe:
-            initialDelaySeconds: 45
+            initialDelaySeconds: 90
             periodSeconds: 120
-            timeoutSeconds: 5
-            tcpSocket:
-              port: 50020
+            timeoutSeconds: 30
+            exec:
+              command:
+              - /usr/local/hadoop/bin/hdfs
+              - dfs
+              - -ls
+              - /
   volumeClaimTemplates:
   - metadata:
       name: $APP_INSTANCE_NAME-hdfs-datanode-2-data
