@@ -12,7 +12,7 @@ Popular open stacks on Kubernetes packaged by Google.
 
 Users are responsible for the cost of the GCP services used while running Cuneiform. There are no additional costs for using the platform. The GCP configuration template for this Quick Start includes configuration parameters and settings you can customize, however, these will affect the cost of your deployment. For those costs, refer the pricing pages for each GCP to be used. Prices are subject to change.
 
-Cuneiform is free to use on GCP when you obtain a license from Peernova, Inc. [Request a license](http://peernova.com/support-form/). The [terms of the license](http://peernova.com/EULA/) can be found on the Peernova, Inc. website. The license will provide you with registration access to enable access to GCP on Cunieform. You will be prompted to create a username and password. Once registration is complete you will be able to use Cunieform on GCP.  
+Cuneiform is free to use on GCP when you obtain a license from Peernova, Inc. [Request a license](http://peernova.com/support-form/). The [terms of the license](http://peernova.com/EULA/) can be found on the Peernova, Inc. website. The license will provide you with registration access to enable access to GCP on Cuneiform. You will be prompted to create a username and password. Once registration is complete you will be able to use Cuneiform on GCP.  
 
 # Installation
 
